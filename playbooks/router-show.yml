@@ -1,0 +1,24 @@
+---
+- name: Show router interfaces
+  hosts: routers
+  gather_facts: no
+  tasks:
+    - name: Show running config
+      ios_command:
+        commands:
+          - show running-config
+      register: running_cfg
+
+    - name: Display running config
+      debug:
+        var: running_cfg.stdout_lines
+
+    - name: Show interfaces
+      ios_command:
+        commands:
+          - show ip interface brief
+      register: iface_info
+
+    - name: Display interface info
+      debug:
+        var: iface_info.stdout_lines

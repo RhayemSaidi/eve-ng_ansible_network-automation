@@ -1,0 +1,27 @@
+---
+- name: Configure static routes
+  hosts: routers
+  gather_facts: no
+  tasks:
+    - name: router0 static routes
+      ios_config:
+        lines:
+          - "ip route 10.0.1.0 255.255.255.0 10.0.0.254"
+          - "ip route 10.0.2.0 255.255.255.0 10.0.0.254"
+      when: inventory_hostname == "router0"
+
+    - name: router1 static routes
+      ios_config:
+        lines:
+          - "ip route 10.0.0.0 255.255.255.0 10.0.1.1"
+          - "ip route 10.0.2.0 255.255.255.0 10.0.1.1"
+          - "ip route 192.168.0.0 255.255.255.0 10.0.1.1"
+      when: inventory_hostname == "router1"
+
+    - name: router2 static routes
+      ios_config:
+        lines:
+          - "ip route 10.0.0.0 255.255.255.0 10.0.2.1"
+          - "ip route 192.168.0.0 255.255.255.0 10.0.2.1"
+      when: inventory_hostname == "router2"
+

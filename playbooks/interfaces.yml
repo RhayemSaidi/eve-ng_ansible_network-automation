@@ -1,0 +1,14 @@
+---
+- name: Configure router interfaces
+  hosts: routers
+  gather_facts: no
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Configure interfaces
+      ios_config:
+        lines:
+          - "ip address {{ item.ip }} {{ item.mask }}"
+          - "no shutdown"
+        parents: "interface {{ item.name }}"
+      loop: "{{ routers[inventory_hostname].interfaces }}"

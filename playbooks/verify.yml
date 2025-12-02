@@ -1,0 +1,22 @@
+---
+- name: Verify router configuration
+  hosts: routers
+  gather_facts: no
+  tasks:
+    - name: Show IP interface brief
+      ios_command:
+        commands:
+          - "show ip interface brief"
+      register: ip_int
+
+    - name: Print interfaces
+      debug:
+        var: ip_int.stdout_lines
+
+    - name: Show routing table
+      ios_command:
+        commands:
+          - "show ip route"
+      register: ip_r
+    - debug:
+        var: ip_r.stdout_lines

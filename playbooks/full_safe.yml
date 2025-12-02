@@ -1,0 +1,93 @@
+---
+- name: Full safe automation playbook
+  hosts: routers
+  gather_facts: no
+  tasks:
+
+    #  Backup configs
+    - name: Save running config to file
+      ios_config:
+        backup: yes
+
+    #  Set hostnames
+    - name: Set hostname
+      ios_config:
+        lines:
+          - hostname "{{ inventory_hostname }}"
+
+    # Ensure admin user exists
+    - name: Ensure admin user exists
+      ios_user:
+        name: admin
+        privilege: 15
+        configured_password: admin123
+        state: present
+
+    #  Configure missing interfaces
+    - name: Configure Ethernet/FastEthernet interfaces
+      ios_config:
+        lines:
+          - interface Ethernet0/0
+          - ip address 192.168.0.10 255.255.255.0
+          - no shutdown
+      when: inventory_hostname == 'router0'
+
+    - name: Configure Router1 interfaces
+      ios_config:
+        lines:
+          - interface FastEthernet0/0
+          - ip address 10.0.1.2 255.255.255.0
+          - no shutdown
+      when: inventory_hostname == 'router1'
+
+    - name: Configure Router2 interfaces
+      ios_config:
+        lines:
+          - interface FastEthernet0/0
+          - ip address 10.0.2.2 255.255.255.0
+          - no shutdown
+      when: inventory_hostname == 'router2'
+
+    #  Configure static routes
+    - name: Static routes Router0
+      ios_config:
+        lines:
+          - ip route 10.0.1.0 255.255.255.0 10.0.0.254
+          - ip route 10.0.2.0 255.255.255.0 10.0.0.254
+      when: inventory_hostname == 'router0'
+
+    - name: Static routes Router1
+      ios_config:
+        lines:
+          - ip route 10.0.0.0 255.255.255.0 10.0.1.1
+          - ip route 10.0.2.0 255.255.255.0 10.0.1.1
+          - ip route 192.168.0.0 255.255.255.0 10.0.1.1
+      when: inventory_hostname == 'router1'
+
+    - name: Static routes Router2
+      ios_config:
+        lines:
+          - ip route 10.0.0.0 255.255.255.0 10.0.2.1
+          - ip route 192.168.0.0 255.255.255.0 10.0.2.1
+      when: inventory_hostname == 'router2'
+
+    #  Compliance checks (optional)
+    - name: Verify NTP
+      ios_command:
+        commands: show running-config | include ntp
+      register: ntp_config
+
+    - name: Warn if NTP missing
+      debug:
+        msg: "NTP not configured on {{ inventory_hostname }}"
+      when: ntp_config.stdout[0] == ""
+
+    - name: Verify SSH
+      ios_command:
+        commands: show running-config | include line vty
+      register: ssh_config
+
+    - name: Warn if SSH missing
+      debug:
+        msg: " SSH not configured on {{ inventory_hostname }}"
+      when: "'transport input ssh' not in ssh_config.stdout[0]"

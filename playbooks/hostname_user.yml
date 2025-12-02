@@ -1,0 +1,16 @@
+---
+- name: Configure hostnames and users
+  hosts: routers
+  gather_facts: no
+  tasks:
+    - name: Set hostname
+      ios_config:
+        lines:
+          - hostname "{{ inventory_hostname }}"
+
+    - name: Ensure admin user exists
+      ios_user:
+        name: admin
+        privilege: 15
+        configured_password: admin123
+        state: present

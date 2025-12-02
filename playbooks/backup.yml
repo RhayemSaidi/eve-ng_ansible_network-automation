@@ -1,0 +1,16 @@
+---
+- name: Backup running configs
+  hosts: routers
+  gather_facts: no
+  tasks:
+
+    - name: Save running config to a file on the router
+      ios_config:
+        backup: yes
+      register: backup_output
+
+    - name: Fetch backup to local backups folder
+      fetch:
+        src: "{{ backup_output.backup_path }}"
+        dest: "../backups/{{ inventory_hostname }}-running-config.txt"
+        flat: yes

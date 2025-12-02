@@ -1,0 +1,35 @@
+---
+- name: Configure static routes
+  hosts: routers
+  gather_facts: no
+  tasks:
+    - name: Static routes for router0
+      ios_static_route:
+        destination: "{{ item.dest }}"
+        mask: "{{ item.mask }}"
+        next_hop: "{{ item.next_hop }}"
+      loop:
+        - { dest: '10.0.1.0', mask: '255.255.255.0', next_hop: '10.0.0.254' }
+        - { dest: '10.0.2.0', mask: '255.255.255.0', next_hop: '10.0.0.254' }
+      when: inventory_hostname == 'router0'
+
+    - name: Static routes for router1
+      ios_static_route:
+        destination: "{{ item.dest }}"
+        mask: "{{ item.mask }}"
+        next_hop: "{{ item.next_hop }}"
+      loop:
+        - { dest: '10.0.0.0', mask: '255.255.255.0', next_hop: '10.0.1.1' }
+        - { dest: '10.0.2.0', mask: '255.255.255.0', next_hop: '10.0.1.1' }
+        - { dest: '192.168.0.0', mask: '255.255.255.0', next_hop: '10.0.1.1' }
+      when: inventory_hostname == 'router1'
+
+    - name: Static routes for router2
+      ios_static_route:
+        destination: "{{ item.dest }}"
+        mask: "{{ item.mask }}"
+        next_hop: "{{ item.next_hop }}"
+      loop:
+        - { dest: '10.0.0.0', mask: '255.255.255.0', next_hop: '10.0.2.1' }
+        - { dest: '192.168.0.0', mask: '255.255.255.0', next_hop: '10.0.2.1' }
+      when: inventory_hostname == 'router2'
