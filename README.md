@@ -30,17 +30,22 @@ The playbooks are designed to be **idempotent**, meaning they can be run multipl
 ## **Repository Structure**
 
 network-automation/
-├── inventory/ # Hosts and group definitions
-│ └── hosts.ini # Defines routers, switches, and their IPs
-├── playbooks/ # Ansible playbooks
-│ ├── backup.yml # Backup device configs
-│ ├── hostname_user.yml # Set hostnames and users
-│ ├── interfaces.yml # Configure interfaces
-│ ├── static_routes.yml # Configure static routes
-│ ├── verify.yml # Verify interfaces, routes, NTP, SSH
-│ └── full_safe.yml # Full workflow combining all tasks
-├── scripts/ # Optional Python scripts for testing/verifying
-└── README.md # This file
+├── inventory/
+│   └── hosts.ini
+│
+├── playbooks/
+│   ├── backup.yml
+│   ├── hostname_user.yml
+│   ├── interfaces.yml
+│   ├── static_routes.yml
+│   ├── verify.yml
+│   └── full_safe.yml
+│
+├── scripts/
+│   └── precheck.py
+│
+├── .gitignore
+└── README.md
 
 
 ---
@@ -81,21 +86,3 @@ Contact
 
 Created by Rhayem Saidi
 GitHub: https://github.com/RhayemSaidi
-
-
----
-
-This README is **fully descriptive**, professional, and explains:
-
-- What the project is  
-- Why it exists  
-- What it does  
-- How to use it step by step  
-- Best practices for network automation  
-- How to work with Git  
-
----
-
-If you want, I can also make an **even more “GitHub-attractive” version with sections highlighted, emojis, and a visual feel** so it looks super clean and modern on your repo page.  
-
-Do you want me to do that?
