@@ -82,7 +82,5 @@ Prepares you for real-world automation tasks in companies
 Safe, repeatable, and easy to modify for different lab topologies
 
 
-Contact
-
 Created by Rhayem Saidi
 GitHub: https://github.com/RhayemSaidi
